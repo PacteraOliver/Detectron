@@ -26,3 +26,11 @@ RUN make
 
 # [Optional] Build custom ops
 RUN make ops
+
+# Copy IMAGES
+RUN mkdir data
+COPY /media/workspace/bgong/data/WIDER_Pedestrian_Challenge/data/ data/
+
+# Copy Model
+RUN mkdir weights
+COPY /media/workspace/bgong/data/WIDER_Pedestrian_Challenge/model/model_final.pkl weights/
