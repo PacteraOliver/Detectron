@@ -142,6 +142,9 @@ def main(args):
             thresh=0.7,
             kp_thresh=2
         )
+        if not result:
+            result = im_name
+
         submit_result.extend(result)
 
     # Write file

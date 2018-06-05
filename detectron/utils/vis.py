@@ -455,7 +455,7 @@ def vis_one_image_bbox(
         if classes[i] == 1:
             result_string = str(im_name) + " " + str(score) + " " + str(int(bbox[0])) + " " + str(
                 int(bbox[1])) + " " + str(int(bbox[2] - bbox[0])) + " " + str(int(bbox[3] - bbox[1]))
-            print result_string
+            # print result_string
             result.append(result_string)
 
         # show mask
@@ -532,8 +532,8 @@ def vis_one_image_bbox(
                     line, color=colors[len(kp_lines) + 1], linewidth=1.0,
                     alpha=0.7)
 
-    output_name = os.path.basename(im_name) + '.' + ext
-    fig.savefig(os.path.join(output_dir, '{}'.format(output_name)), dpi=dpi)
-    plt.close('all')
+    # output_name = os.path.basename(im_name) + '.' + ext
+    # fig.savefig(os.path.join(output_dir, '{}'.format(output_name)), dpi=dpi)
+    # plt.close('all')
 
     return result
