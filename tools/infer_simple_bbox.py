@@ -101,6 +101,7 @@ def main(args):
     model = infer_engine.initialize_model_from_cfg(args.weights)
     dummy_coco_dataset = dummy_datasets.get_coco_dataset()
     submit_result = []
+    result_file_name = 'detectron_val_result.txt'
 
     if os.path.isdir(args.im_or_folder):
         im_list = glob.iglob(args.im_or_folder + '/*.' + args.image_ext)
@@ -142,15 +143,18 @@ def main(args):
             thresh=0.7,
             kp_thresh=2
         )
-        if not result:
-            result = im_name
-
-        submit_result.extend(result)
+        if result:
+            submit_result.extend(result)
+        logger.info('Image {}.'.format(i))
 
     # Write file
-    with open('detectron_result.txt', 'wb') as result_file:
+    with open(result_file_name, 'wb') as result_file:
         for item in submit_result:
             result_file.write("%s\n" % item)
+
+    logger.info(
+        'The result file has been written in {}.'.format(result_file_name)
+    )
 
 
 if __name__ == '__main__':

@@ -4,7 +4,7 @@ MODEL:
   NUM_CLASSES: 81
   FASTER_RCNN: True
   MASK_ON: True
-NUM_GPUS: 8
+NUM_GPUS: 1
 SOLVER:
   WEIGHT_DECAY: 0.0001
   LR_POLICY: steps_with_decay
