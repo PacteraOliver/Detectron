@@ -34,3 +34,7 @@ COPY /media/workspace/bgong/data/WIDER_Pedestrian_Challenge/data/ data/
 # Copy Model
 RUN mkdir weights
 COPY /media/workspace/bgong/data/WIDER_Pedestrian_Challenge/model/model_final.pkl weights/
+
+# Install Some package
+RUN apt update
+RUN apt install -y vim
