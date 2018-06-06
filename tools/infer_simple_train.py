@@ -102,14 +102,15 @@ def main(args):
     dummy_wider_dataset = wider_datasets.get_wider_dataset()
 
     INFER_BOX_ALPHA = 0.3
-    INFER_THRESH = 0.8
+    INFER_THRESH = 0.7
     INFER_KP_THRESH = 2
     MODEL_ITER = 60000
 
     submit_result = []
-    result_file_name = 'detectron_val_result_model_{}_BoxAlpha_{}_Thresh_{}_BoxNumber.txt'.format(MODEL_ITER,
-                                                                                                  INFER_BOX_ALPHA,
-                                                                                                  INFER_THRESH)
+    result_file_name = 'detectron_val_result_model_{}_NMS_{}_BoxAlpha_{}_Thresh_{}_BoxNumber.txt'.format(MODEL_ITER,
+                                                                                                         cfg.TEST.NMS,
+                                                                                                         INFER_BOX_ALPHA,
+                                                                                                         INFER_THRESH)
 
     if os.path.isdir(args.im_or_folder):
         im_list = glob.iglob(args.im_or_folder + '/*.' + args.image_ext)
