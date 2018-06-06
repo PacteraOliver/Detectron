@@ -28,3 +28,6 @@ detectron/utils/cython_*.c
 
 # Folder
 .idea/
+
+#background running output
+nohup.out
