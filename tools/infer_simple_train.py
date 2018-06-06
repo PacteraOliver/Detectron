@@ -106,6 +106,7 @@ def main(args):
     args.weights = cache_url(args.weights, cfg.DOWNLOAD_CACHE)
     assert_and_infer_cfg(cache_urls=False)
     model = infer_engine.initialize_model_from_cfg(args.weights, args.gpu_id)
+    logger.info('Model Load Finished. \n\n')
     dummy_wider_dataset = wider_datasets.get_wider_dataset()
 
     INFER_BOX_ALPHA = 0.3
