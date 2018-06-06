@@ -29,11 +29,11 @@ RUN make ops
 
 # Copy IMAGES
 RUN mkdir data
-COPY /media/workspace/bgong/data/WIDER_Pedestrian_Challenge/data/ data/
+COPY /media/workspace/bgong/data/WIDER_Pedestrian_Challenge/data data
 
 # Copy Model
 RUN mkdir weights
-COPY /media/workspace/bgong/data/WIDER_Pedestrian_Challenge/model/model_final.pkl weights/
+COPY /media/workspace/bgong/data/WIDER_Pedestrian_Challenge/model/model_final.pkl weights/model_final.pkl
 
 # Install Some package
 RUN apt update
