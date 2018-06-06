@@ -84,6 +84,13 @@ def parse_args():
         type=str
     )
     parser.add_argument(
+        '--gpu-id',
+        dest='gpu_id',
+        help='Set GPU Running ID for inference. (default: 0)',
+        default='0',
+        type=int
+    )
+    parser.add_argument(
         'im_or_folder', help='image or folder of images', default=None
     )
     if len(sys.argv) == 1:
@@ -98,7 +105,7 @@ def main(args):
     cfg.NUM_GPUS = 1
     args.weights = cache_url(args.weights, cfg.DOWNLOAD_CACHE)
     assert_and_infer_cfg(cache_urls=False)
-    model = infer_engine.initialize_model_from_cfg(args.weights)
+    model = infer_engine.initialize_model_from_cfg(args.weights, args.gpu_id)
     dummy_wider_dataset = wider_datasets.get_wider_dataset()
 
     INFER_BOX_ALPHA = 0.3
