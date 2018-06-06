@@ -603,7 +603,7 @@ def vis_one_image_bbox_2_class(
                     facecolor='g', alpha=0.4, pad=0, edgecolor='none'),
                 color='white')
 
-        if classes[i] == 1 and classes[i] == 2:
+        if classes[i] == 1 or classes[i] == 2:
             result_string = str(im_name) + " " + str(score) + " " + str(int(bbox[0])) + " " + str(
                 int(bbox[1])) + " " + str(int(bbox[2] - bbox[0])) + " " + str(int(bbox[3] - bbox[1]))
             # print result_string
