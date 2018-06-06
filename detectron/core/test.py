@@ -761,6 +761,7 @@ def box_results_with_nms_and_limit(scores, boxes):
     box at `boxes[i, j * 4:(j + 1) * 4]`.
     """
     num_classes = cfg.MODEL.NUM_CLASSES
+    print num_classes
     cls_boxes = [[] for _ in range(num_classes)]
     # Apply threshold on detection probabilities and apply NMS
     # Skip j = 0, because it's the background class
