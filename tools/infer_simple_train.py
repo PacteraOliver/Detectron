@@ -102,7 +102,7 @@ def main(args):
     dummy_wider_dataset = wider_datasets.get_wider_dataset()
 
     INFER_BOX_ALPHA = 0.3
-    INFER_THRESH = 0.9
+    INFER_THRESH = 0.8
     INFER_KP_THRESH = 2
     MODEL_ITER = 60000
 
