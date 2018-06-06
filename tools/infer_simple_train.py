@@ -100,8 +100,16 @@ def main(args):
     assert_and_infer_cfg(cache_urls=False)
     model = infer_engine.initialize_model_from_cfg(args.weights)
     dummy_wider_dataset = wider_datasets.get_wider_dataset()
+
+    INFER_BOX_ALPHA = 0.3
+    INFER_THRESH = 0.9
+    INFER_KP_THRESH = 2
+    MODEL_ITER = 60000
+
     submit_result = []
-    result_file_name = 'detectron_val_result_with_own_train.txt'
+    result_file_name = 'detectron_val_result_model_{}_BoxAlpha_{}_Thresh_{}_BoxNumber.txt'.format(MODEL_ITER,
+                                                                                                  INFER_BOX_ALPHA,
+                                                                                                  INFER_THRESH)
 
     if os.path.isdir(args.im_or_folder):
         im_list = glob.iglob(args.im_or_folder + '/*.' + args.image_ext)
@@ -138,10 +146,10 @@ def main(args):
             cls_segms,
             cls_keyps,
             dataset=dummy_wider_dataset,
-            box_alpha=0.3,
+            box_alpha=INFER_BOX_ALPHA,
             show_class=False,
-            thresh=0.7,
-            kp_thresh=2
+            thresh=INFER_THRESH,
+            kp_thresh=INFER_KP_THRESH
         )
         if result:
             submit_result.extend(result)
