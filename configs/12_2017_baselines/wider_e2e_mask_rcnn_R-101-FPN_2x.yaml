@@ -1,7 +1,7 @@
 MODEL:
   TYPE: generalized_rcnn
   CONV_BODY: FPN.add_fpn_ResNet101_conv5_body
-  NUM_CLASSES: 2
+  NUM_CLASSES: 3
   FASTER_RCNN: True
   MASK_ON: True
 NUM_GPUS: 1
