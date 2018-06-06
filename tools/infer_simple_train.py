@@ -130,7 +130,7 @@ def main(args):
                 'rest (caches and auto-tuning need to warm up)'
             )
 
-        result = vis_utils.vis_one_image_bbox(
+        result = vis_utils.vis_one_image_bbox_2_class(
             im[:, :, ::-1],  # BGR -> RGB for visualization
             im_name,
             args.output_dir,
