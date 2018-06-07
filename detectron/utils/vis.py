@@ -605,7 +605,7 @@ def vis_one_image_bbox_2_class(
 
         if classes[i] == 1 or classes[i] == 2:
 
-            result_string = str(im_name) + " " + str(score) + " " + str(float(bbox[0])) + " " + str(
+            result_string = str(im_name).split("/")[2] + " " + str(score) + " " + str(float(bbox[0])) + " " + str(
                 float(bbox[1])) + " " + str(float(bbox[2] - bbox[0])) + " " + str(float(bbox[3] - bbox[1]))
             # print result_string
             result.append(result_string)
