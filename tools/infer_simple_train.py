@@ -165,7 +165,7 @@ def main(args):
             result_file.write("%s\n" % item)
 
     logger.info(
-        'The result file has been written in {}.'.format(result_file_name)
+        'The result file has been written in {}'.format(result_file_name)
     )
 
 
