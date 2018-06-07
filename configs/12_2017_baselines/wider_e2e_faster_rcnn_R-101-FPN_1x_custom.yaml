@@ -30,8 +30,8 @@ FAST_RCNN:
   ROI_XFORM_RESOLUTION: 7
   ROI_XFORM_SAMPLING_RATIO: 2
 TRAIN:
-  WEIGHTS: ./weight/X-101-64x4d.pkl
-  DATASETS: ('coco_2014_train')
+  WEIGHTS: ./weights/X-101-64x4d.pkl
+  DATASETS: ('coco_2014_train', )
   SCALES: (800,)
   MAX_SIZE: 1615
   IMS_PER_BATCH: 1
