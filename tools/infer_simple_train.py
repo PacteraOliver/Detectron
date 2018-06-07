@@ -107,10 +107,12 @@ def main(args):
     MODEL_ITER = 60000
 
     submit_result = []
-    result_file_name = 'detectron_val_result_model_{}_NMS_{}_BoxAlpha_{}_Thresh_{}_BoxNumber.txt'.format(MODEL_ITER,
-                                                                                                         cfg.TEST.NMS,
-                                                                                                         INFER_BOX_ALPHA,
-                                                                                                         INFER_THRESH)
+    result_file_name = 'detectron_val_result_model_{}_NMS_{}_SOFTNMS_{}_BoxAlpha_{}_Thresh_{}_BoxNumber.txt'.format(
+        MODEL_ITER,
+        cfg.TEST.NMS,
+        cfg.TEST.SOFT_NMS.ENABLED,
+        INFER_BOX_ALPHA,
+        INFER_THRESH)
 
     if os.path.isdir(args.im_or_folder):
         im_list = glob.iglob(args.im_or_folder + '/*.' + args.image_ext)
