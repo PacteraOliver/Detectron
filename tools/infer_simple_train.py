@@ -107,11 +107,11 @@ def main(args):
     MODEL_ITER = 60000
 
     submit_result = []
-    result_file_name = 'detectron_val_result_model_{}_NMS_{}_SOFTNMS_{}_SCORE_THRESH_{}_BoxAlpha_{}_Thresh_{}_BoxNumber.txt'.format(
+    result_file_name = 'detectron_val_result_model_{}_NMS_{}_SOFTNMS_{}_BBOX_VOTE_{}_BoxAlpha_{}_Thresh_{}_BoxNumber.txt'.format(
         MODEL_ITER,
         cfg.TEST.NMS,
         cfg.TEST.SOFT_NMS.ENABLED,
-        cfg.TEST.SCORE_THRESH,
+        cfg.TEST.BBOX_VOTE.ENABLED,
         INFER_BOX_ALPHA,
         INFER_THRESH)
 
