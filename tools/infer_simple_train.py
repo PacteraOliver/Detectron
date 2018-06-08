@@ -146,7 +146,7 @@ def main(args):
                 'rest (caches and auto-tuning need to warm up)'
             )
 
-        result, bbox_count = vis_utils.vis_one_image_bbox_2_class(
+        result = vis_utils.vis_one_image_bbox_2_class(
             im[:, :, ::-1],  # BGR -> RGB for visualization
             im_name,
             args.output_dir,
@@ -170,9 +170,6 @@ def main(args):
 
     logger.info(
         'The result file has been written in {}'.format(result_file_name)
-    )
-    logger.info(
-        'Total BBox Number: {}'.format(bbox_count)
     )
 
 

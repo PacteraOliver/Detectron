@@ -560,7 +560,6 @@ def vis_one_image_bbox_2_class(
         masks = mask_util.decode(segms)
 
     result = []
-    bbox_count = 0
 
     color_list = colormap(rgb=True) / 255
 
@@ -691,4 +690,4 @@ def vis_one_image_bbox_2_class(
     # fig.savefig(os.path.join(output_dir, '{}'.format(output_name)), dpi=dpi)
     plt.close('all')
 
-    return result, bbox_count
+    return result
