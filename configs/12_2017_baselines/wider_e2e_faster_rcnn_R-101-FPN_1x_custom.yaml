@@ -17,7 +17,7 @@ FPN:
   MULTILEVEL_RPN: True
   RPN_MAX_LEVEL: 6
   RPN_MIN_LEVEL: 2
-  RPN_ANCHOR_START_SIZE: 32
+  RPN_ANCHOR_START_SIZE: 16
   RPN_ASPECT_RATIOS: (0.5, 1, 2)
 RESNETS:
   STRIDE_1X1: False  # default True for MSRA; False for C2 or Torch models
