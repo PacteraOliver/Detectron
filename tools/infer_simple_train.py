@@ -102,7 +102,7 @@ def main(args):
     dummy_wider_dataset = wider_datasets.get_wider_dataset()
 
     INFER_BOX_ALPHA = 0.3
-    INFER_THRESH = 0.4
+    INFER_THRESH = 0.5
     INFER_KP_THRESH = 2
     MODEL_ITER = 60000
 
@@ -174,7 +174,6 @@ def main(args):
     logger.info(
         'Total BBox Number: {}'.format(bbox_count)
     )
-
 
 
 if __name__ == '__main__':
