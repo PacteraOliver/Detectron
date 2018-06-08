@@ -102,7 +102,7 @@ def main(args):
     dummy_wider_dataset = wider_datasets.get_wider_dataset()
 
     INFER_BOX_ALPHA = 0.3
-    INFER_THRESH = 0.55
+    INFER_THRESH = 0.4
     INFER_KP_THRESH = 2
     MODEL_ITER = 60000
 
@@ -146,7 +146,7 @@ def main(args):
                 'rest (caches and auto-tuning need to warm up)'
             )
 
-        result = vis_utils.vis_one_image_bbox_2_class(
+        result, bbox_count = vis_utils.vis_one_image_bbox_2_class(
             im[:, :, ::-1],  # BGR -> RGB for visualization
             im_name,
             args.output_dir,
@@ -171,6 +171,10 @@ def main(args):
     logger.info(
         'The result file has been written in {}'.format(result_file_name)
     )
+    logger.info(
+        'Total BBox Number: {}'.format(bbox_count)
+    )
+
 
 
 if __name__ == '__main__':
