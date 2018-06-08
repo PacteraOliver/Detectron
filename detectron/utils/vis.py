@@ -604,9 +604,6 @@ def vis_one_image_bbox_2_class(
                 color='white')
 
         if classes[i] == 1 or classes[i] == 2:
-
-            bbox_count += 1
-
             result_string = str(im_name).split("/")[2] + " " + str(score) + " " + str(float(bbox[0])) + " " + str(
                 float(bbox[1])) + " " + str(float(bbox[2] - bbox[0])) + " " + str(float(bbox[3] - bbox[1]))
             # print result_string
