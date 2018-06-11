@@ -23,8 +23,8 @@
 
 import numpy as np
 
-from core.config import cfg
-import utils.boxes as box_utils
+from detectron.core.config import cfg
+import detectron.utils.boxes as box_utils
 
 
 class GenerateProposalsOp(object):
