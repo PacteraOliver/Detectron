@@ -10,8 +10,8 @@ cd ..
 
 python2 tools/infer_simple_bbox.py --cfg configs/12_2017_baselines/e2e_mask_rcnn_R-101-FPN_2x.yaml --output-dir /tmp/detectron-visualizations_bbox --image-ext jpg --wts weights/model_final.pkl data/train
 
-python2 tools/infer_simple_train.py --cfg configs/12_2017_baselines/wider_e2e_faster_rcnn_R-101-FPN_1x.yaml --output-dir /tmp/detectron-visualizations_bbox --image-ext jpg --wts weights/model_train_60000.pkl data/val
+python2 tools/infer_simple_train.py --cfg configs/12_2017_baselines/wider_e2e_faster_rcnn_R-101-FPN_1x_custom.yaml --output-dir /tmp/detectron-visualizations_bbox --image-ext jpg --wts weights/model_train_60000.pkl data/val
 
-python2 tools/infer_simple_train.py --cfg configs/12_2017_baselines/wider_e2e_faster_rcnn_R-101-FPN_1x.yaml --output-dir /tmp/detectron-visualizations_bbox --image-ext jpg --wts weights/model_fastrcnn_rpn_anchor_16.pkl data/val
+python2 tools/infer_simple_train.py --cfg configs/12_2017_baselines/wider_e2e_faster_rcnn_R-101-FPN_1x_custom.yaml --output-dir /tmp/detectron-visualizations_bbox --image-ext jpg --wts weights/model_fastrcnn_rpn_anchor_16.pkl data/val
 
 python2 tools/infer_simple_train.py --cfg configs/12_2017_baselines/wider_e2e_faster_rcnn_R-101-FPN_1x_custom.yaml --output-dir /tmp/detectron-visualizations_bbox --image-ext jpg --wts weights/model_fasterrcnn_fpn_r101_1x_60000.pkl data/val
