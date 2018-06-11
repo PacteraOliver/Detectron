@@ -28,8 +28,11 @@ from detectron.utils.collections import AttrDict
 def get_wider_dataset():
     """A dummy WIDER dataset that includes only the 'classes' field."""
     ds = AttrDict()
+    # classes = [
+    #     '__background__', 'pedestrian', 'cyclist'
+    # ]
     classes = [
-        '__background__', 'pedestrian', 'cyclist'
+        '__background__', 'person', 'cyclist'
     ]
     ds.classes = {i: name for i, name in enumerate(classes)}
     return ds
