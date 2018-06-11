@@ -20,12 +20,12 @@ from __future__ import unicode_literals
 
 import numpy as np
 
-from detectron.core.config import cfg
-from detectron.datasets import json_dataset
-from detectron.datasets import roidb as roidb_utils
-import detectron.modeling.FPN as fpn
-import detectron.roi_data.fast_rcnn as fast_rcnn_roi_data
-import detectron.utils.blob as blob_utils
+from core.config import cfg
+from datasets import json_dataset
+import modeling.FPN as fpn
+import roi_data.fast_rcnn
+import utils.blob as blob_utils
+import utils.boxes as box_utils
 
 
 class CollectAndDistributeFpnRpnProposalsOp(object):
@@ -54,12 +54,11 @@ class CollectAndDistributeFpnRpnProposalsOp(object):
             # This choice should be investigated in the future (it likely does
             # not matter).
             json_dataset.add_proposals(roidb, rois, im_scales, crowd_thresh=0)
-            roidb_utils.add_bbox_regression_targets(roidb)
             # Compute training labels for the RPN proposals; also handles
             # distributing the proposals over FPN levels
-            output_blob_names = fast_rcnn_roi_data.get_fast_rcnn_blob_names()
+            output_blob_names = roi_data.fast_rcnn.get_fast_rcnn_blob_names()
             blobs = {k: [] for k in output_blob_names}
-            fast_rcnn_roi_data.add_fast_rcnn_blobs(blobs, im_scales, roidb)
+            roi_data.fast_rcnn.add_fast_rcnn_blobs(blobs, im_scales, roidb)
             for i, k in enumerate(output_blob_names):
                 blob_utils.py_op_copy_blob(blobs[k], outputs[i])
         else:
@@ -70,7 +69,9 @@ class CollectAndDistributeFpnRpnProposalsOp(object):
 
 def collect(inputs, is_training):
     cfg_key = 'TRAIN' if is_training else 'TEST'
+    pre_nms_topN = cfg[cfg_key].RPN_PRE_NMS_TOP_N
     post_nms_topN = cfg[cfg_key].RPN_POST_NMS_TOP_N
+    nms_thresh = cfg[cfg_key].RPN_NMS_THRESH
     k_max = cfg.FPN.RPN_MAX_LEVEL
     k_min = cfg.FPN.RPN_MIN_LEVEL
     num_lvls = k_max - k_min + 1
@@ -83,14 +84,37 @@ def collect(inputs, is_training):
     # Combine predictions across all levels and retain the top scoring
     rois = np.concatenate([blob.data for blob in roi_inputs])
     scores = np.concatenate([blob.data for blob in score_inputs]).squeeze()
-    inds = np.argsort(-scores)[:post_nms_topN]
-    rois = rois[inds, :]
+    if 0:
+        inds = np.argsort(-scores)[:post_nms_topN]
+        rois = rois[inds, :]
+    else:
+        if pre_nms_topN <= 0 or pre_nms_topN >= len(scores):
+            order = np.argsort(-scores.squeeze())
+        else:
+            # Avoid sorting possibly large arrays; First partition to get top K
+            # unsorted and then sort just those (~20x faster for 200k scores)
+            inds = np.argpartition(
+                -scores.squeeze(), pre_nms_topN
+            )[:pre_nms_topN]
+            order = np.argsort(-scores[inds].squeeze())
+            order = inds[order]
+        proposals = rois[order, 1:]
+        scores = scores[order].reshape((-1, 1))
+        ids = rois[order, 0].reshape((-1, 1))
+        if nms_thresh > 0:
+            keep = box_utils.nms(np.hstack((proposals, scores)), nms_thresh)
+            if post_nms_topN > 0:
+                keep = keep[:post_nms_topN]
+            proposals = proposals[keep, :]
+            scores = scores[keep]
+            ids = ids[keep]
+        rois = np.hstack((ids, proposals))
     return rois
 
 
 def distribute(rois, label_blobs, outputs, train):
     """To understand the output blob order see return value of
-    detectron.roi_data.fast_rcnn.get_fast_rcnn_blob_names(is_training=False)
+    roi_data.fast_rcnn.get_fast_rcnn_blob_names(is_training=False)
     """
     lvl_min = cfg.FPN.ROI_MIN_LEVEL
     lvl_max = cfg.FPN.ROI_MAX_LEVEL
@@ -102,7 +126,7 @@ def distribute(rois, label_blobs, outputs, train):
     # Create new roi blobs for each FPN level
     # (See: modeling.FPN.add_multilevel_roi_blobs which is similar but annoying
     # to generalize to support this particular case.)
-    rois_idx_order = np.empty((0, ))
+    rois_idx_order = np.empty((0,))
     for output_idx, lvl in enumerate(range(lvl_min, lvl_max + 1)):
         idx_lvl = np.where(lvls == lvl)[0]
         blob_roi_level = rois[idx_lvl, :]

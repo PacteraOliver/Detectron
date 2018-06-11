@@ -29,13 +29,13 @@ from caffe2.python import workspace
 from caffe2.python.modeling import initializers
 from caffe2.python.modeling.parameter_info import ParameterTags
 
-from detectron.core.config import cfg
-from detectron.ops.collect_and_distribute_fpn_rpn_proposals \
+from core.config import cfg
+from ops.collect_and_distribute_fpn_rpn_proposals \
     import CollectAndDistributeFpnRpnProposalsOp
-from detectron.ops.generate_proposal_labels import GenerateProposalLabelsOp
-from detectron.ops.generate_proposals import GenerateProposalsOp
-import detectron.roi_data.fast_rcnn as fast_rcnn_roi_data
-import detectron.utils.c2 as c2_utils
+from ops.generate_proposal_labels import GenerateProposalLabelsOp
+from ops.generate_proposals import GenerateProposalsOp
+import roi_data.fast_rcnn
+import utils.c2 as c2_utils
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +63,6 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         self.net.Proto().type = cfg.MODEL.EXECUTION_TYPE
         self.net.Proto().num_workers = cfg.NUM_GPUS * 4
         self.prev_use_cudnn = self.use_cudnn
-        self.gn_params = []  # Param on this list are GroupNorm parameters
 
     def TrainableParams(self, gpu_id=-1):
         """Get the blob names for all trainable parameters, possibly filtered by
@@ -81,7 +80,6 @@ class DetectionModelHelper(cnn.CNNModelHelper):
     def AffineChannel(self, blob_in, blob_out, dim, inplace=False):
         """Affine transformation to replace BN in networks where BN cannot be
         used (e.g., because the minibatch size is too small).
-
         The operations can be done in place to save memory.
         """
         blob_out = blob_out or self.net.NextName()
@@ -106,7 +104,6 @@ class DetectionModelHelper(cnn.CNNModelHelper):
 
     def GenerateProposals(self, blobs_in, blobs_out, anchors, spatial_scale):
         """Op for generating RPN porposals.
-
         blobs_in:
           - 'rpn_cls_probs': 4D tensor of shape (N, A, H, W), where N is the
             number of minibatch images, A is the number of anchors per
@@ -119,7 +116,6 @@ class DetectionModelHelper(cnn.CNNModelHelper):
             for the input to the network, not the original image; scale is the
             scale factor used to scale the original image to the network input
             size.
-
         blobs_out:
           - 'rpn_rois': 2D tensor of shape (R, 5), for R RPN proposals where the
             five columns encode [batch ind, x1, y1, x2, y2]. The boxes are
@@ -141,12 +137,10 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         """Op for generating training labels for RPN proposals. This is used
         when training RPN jointly with Fast/Mask R-CNN (as in end-to-end
         Faster R-CNN training).
-
         blobs_in:
           - 'rpn_rois': 2D tensor of RPN proposals output by GenerateProposals
           - 'roidb': roidb entries that will be labeled
           - 'im_info': See GenerateProposals doc.
-
         blobs_out:
           - (variable set of blobs): returns whatever blobs are required for
             training the model. It does this by querying the data loader for
@@ -159,7 +153,7 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         # The list of blobs is not known before run-time because it depends on
         # the specific model being trained. Query the data loader to get the
         # list of output blob names.
-        blobs_out = fast_rcnn_roi_data.get_fast_rcnn_blob_names(
+        blobs_out = roi_data.fast_rcnn.get_fast_rcnn_blob_names(
             is_training=self.train
         )
         blobs_out = [core.ScopedBlobReference(b) for b in blobs_out]
@@ -174,26 +168,21 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         distribute those proposals to their appropriate FPN levels. An anchor
         at one FPN level may predict an RoI that will map to another level,
         hence the need to redistribute the proposals.
-
         This function assumes standard blob names for input and output blobs.
-
         Input blobs: [rpn_rois_fpn<min>, ..., rpn_rois_fpn<max>,
                       rpn_roi_probs_fpn<min>, ..., rpn_roi_probs_fpn<max>]
           - rpn_rois_fpn<i> are the RPN proposals for FPN level i; see rpn_rois
             documentation from GenerateProposals.
           - rpn_roi_probs_fpn<i> are the RPN objectness probabilities for FPN
             level i; see rpn_roi_probs documentation from GenerateProposals.
-
         If used during training, then the input blobs will also include:
           [roidb, im_info] (see GenerateProposalLabels).
-
         Output blobs: [rois_fpn<min>, ..., rois_rpn<max>, rois,
                        rois_idx_restore]
           - rois_fpn<i> are the RPN proposals for FPN level i
           - rois_idx_restore is a permutation on the concatenation of all
             rois_fpn<i>, i=min...max, such that when applied the RPN RoIs are
             restored to their original order in the input blobs.
-
         If used during training, then the output blobs will also include:
           [labels, bbox_targets, bbox_inside_weights, bbox_outside_weights].
         """
@@ -214,7 +203,7 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         )
 
         # Prepare output blobs
-        blobs_out = fast_rcnn_roi_data.get_fast_rcnn_blob_names(
+        blobs_out = roi_data.fast_rcnn.get_fast_rcnn_blob_names(
             is_training=self.train
         )
         blobs_out = [core.ScopedBlobReference(b) for b in blobs_out]
@@ -247,7 +236,6 @@ class DetectionModelHelper(cnn.CNNModelHelper):
     ):
         """Add the specified RoI pooling method. The sampling_ratio argument
         is supported for some, but not all, RoI transform methods.
-
         RoIFeatureTransform abstracts away:
           - Use of FPN or not
           - Specifics of the transform method
@@ -298,7 +286,7 @@ class DetectionModelHelper(cnn.CNNModelHelper):
                 sampling_ratio=sampling_ratio
             )
         # Only return the first blob (the transformed features)
-        return xform_out[0] if isinstance(xform_out, tuple) else xform_out
+        return xform_out
 
     def ConvShared(
         self,
@@ -339,9 +327,7 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         self, blob_in, blob_out, dim_in, dim_out, up_scale
     ):
         """Bilinear interpolation in space of scale.
-
         Takes input of NxKxHxW and outputs NxKx(sH)x(sW), where s:= up_scale
-
         Adapted from the CVPR'15 FCN code.
         See: https://github.com/shelhamer/fcn.berkeleyvision.org/blob/master/surgery.py
         """
@@ -381,6 +367,38 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         self.do_not_update_params.append(self.biases[-1])
         return blob
 
+
+    def ConvAffine_v2(  # args in the same order of Conv()
+        self, blob_in, prefix, dim_in, dim_out, kernel, stride, pad,
+        group=1, dilation=1,
+        weight_init=None,
+        bias_init=None,
+        suffix='_bn',
+        inplace=False
+    ):
+        """ConvAffine adds a Conv op followed by a AffineChannel op (which
+        replaces BN during fine tuning).
+        """
+        conv_blob = self.Conv(
+            blob_in,
+            prefix+'_conv'+suffix,
+            dim_in,
+            dim_out,
+            kernel,
+            stride=stride,
+            pad=pad,
+            group=group,
+            dilation=dilation,
+            weight_init=weight_init,
+            bias_init=bias_init,
+            no_bias=1
+        )
+        blob_out = self.AffineChannel(
+            conv_blob, prefix + '_bn'+suffix, dim=dim_out, inplace=inplace
+        )
+        return blob_out
+
+
     def ConvAffine(  # args in the same order of Conv()
         self, blob_in, prefix, dim_in, dim_out, kernel, stride, pad,
         group=1, dilation=1,
@@ -409,48 +427,6 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         blob_out = self.AffineChannel(
             conv_blob, prefix + suffix, dim=dim_out, inplace=inplace
         )
-        return blob_out
-
-    def ConvGN(  # args in the same order of Conv()
-        self, blob_in, prefix, dim_in, dim_out, kernel, stride, pad,
-        group_gn,  # num of groups in gn
-        group=1, dilation=1,
-        weight_init=None,
-        bias_init=None,
-        suffix='_gn',
-        no_conv_bias=1,
-    ):
-        """ConvGN adds a Conv op followed by a GroupNorm op,
-        including learnable scale/bias (gamma/beta)
-        """
-        conv_blob = self.Conv(
-            blob_in,
-            prefix,
-            dim_in,
-            dim_out,
-            kernel,
-            stride=stride,
-            pad=pad,
-            group=group,
-            dilation=dilation,
-            weight_init=weight_init,
-            bias_init=bias_init,
-            no_bias=no_conv_bias)
-
-        if group_gn < 1:
-            logger.warning(
-                'Layer: {} (dim {}): '
-                'group_gn < 1; reset to 1.'.format(prefix, dim_in)
-            )
-            group_gn = 1
-
-        blob_out = self.SpatialGN(
-            conv_blob, prefix + suffix,
-            dim_out, num_groups=group_gn,
-            epsilon=cfg.GROUP_NORM.EPSILON,)
-
-        self.gn_params.append(self.params[-1])  # add gn's bias to list
-        self.gn_params.append(self.params[-2])  # add gn's scale to list
         return blob_out
 
     def DisableCudnn(self):
@@ -494,9 +470,7 @@ class DetectionModelHelper(cnn.CNNModelHelper):
 
     def _CorrectMomentum(self, correction):
         """The MomentumSGDUpdate op implements the update V as
-
             V := mu * V + lr * grad,
-
         where mu is the momentum factor, lr is the learning rate, and grad is
         the stochastic gradient. Since V is not defined independently of the
         learning rate (as it should ideally be), when the learning rate is
@@ -516,7 +490,6 @@ class DetectionModelHelper(cnn.CNNModelHelper):
 
     def GetLossScale(self):
         """Allow a way to configure the loss scale dynamically.
-
         This may be used in a distributed data parallel setting.
         """
         return 1.0 / cfg.NUM_GPUS
