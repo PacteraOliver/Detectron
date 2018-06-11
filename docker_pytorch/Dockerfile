@@ -1,12 +1,6 @@
 # Use Caffe2 image as parent image
 FROM pytorch/pytorch:0.4_cuda9_cudnn7
 
-RUN mv /usr/local/caffe2 /usr/local/caffe2_build
-ENV Caffe2_DIR /usr/local/caffe2_build
-
-ENV PYTHONPATH /usr/local/caffe2_build:${PYTHONPATH}
-ENV LD_LIBRARY_PATH /usr/local/caffe2_build/lib:${LD_LIBRARY_PATH}
-
 # Clone the Detectron repository
 RUN git clone https://github.com/PacteraOliver/Detectron.git /detectron
 
@@ -26,14 +20,6 @@ RUN make
 
 # [Optional] Build custom ops
 RUN make ops
-
-# Copy IMAGES
-RUN mkdir data
-COPY /media/workspace/bgong/data/WIDER_Pedestrian_Challenge/data data
-
-# Copy Model
-RUN mkdir weights
-COPY /media/workspace/bgong/data/WIDER_Pedestrian_Challenge/model/model_final.pkl weights/model_final.pkl
 
 # Install Some package
 RUN apt update
