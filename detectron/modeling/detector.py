@@ -33,7 +33,7 @@ from detectron.core.config import cfg
 from detectron.ops.collect_and_distribute_fpn_rpn_proposals import CollectAndDistributeFpnRpnProposalsOp
 from detectron.ops.generate_proposal_labels import GenerateProposalLabelsOp
 from detectron.ops.generate_proposals import GenerateProposalsOp
-import roi_data.fast_rcnn
+import detectron.roi_data.fast_rcnn
 import detectron.utils.c2 as c2_utils
 
 logger = logging.getLogger(__name__)
