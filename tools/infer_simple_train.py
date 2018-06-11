@@ -109,13 +109,13 @@ def main(args):
     submit_result = []
     result_file_name = 'detectron_val_result_model_fastrcnn_freeze_{}_' \
                        'NMS_{}_SOFTNMS_{}_BBOX_VOTE_{}_' \
-                       'SCORING_METHOD_{}_BoxAlpha_{}_' \
+                       'PRE_NMS_{}_BoxAlpha_{}_' \
                        'Thresh_{}_BoxNumber.txt'.format(
         MODEL_ITER,
         cfg.TEST.NMS,
         cfg.TEST.SOFT_NMS.ENABLED,
         cfg.TEST.BBOX_VOTE.ENABLED,
-        cfg.TEST.BBOX_VOTE.SCORING_METHOD,
+        cfg.TEST.RPN_PRE_NMS_TOP_N,
         INFER_BOX_ALPHA,
         INFER_THRESH)
 
