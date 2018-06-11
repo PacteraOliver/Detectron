@@ -24,10 +24,10 @@ import logging
 import numpy as np
 import numpy.random as npr
 
-from detectron.core.config import cfg
-import detectron.roi_data.data_utils as data_utils
-import detectron.utils.blob as blob_utils
-import detectron.utils.boxes as box_utils
+from core.config import cfg
+import roi_data.data_utils as data_utils
+import utils.blob as blob_utils
+import utils.boxes as box_utils
 
 logger = logging.getLogger(__name__)
 
@@ -67,8 +67,10 @@ def add_rpn_blobs(blobs, im_scales, roidb):
         k_min = cfg.FPN.RPN_MIN_LEVEL
         foas = []
         for lvl in range(k_min, k_max + 1):
-            field_stride = 2.**lvl
-            anchor_sizes = (cfg.FPN.RPN_ANCHOR_START_SIZE * 2.**(lvl - k_min), )
+            # field_stride = 2.**lvl
+            anchor_sizes = (cfg.FPN.RPN_ANCHOR_START_SIZE * 2. ** (lvl - k_min),)
+            field_stride = min(16., 2. ** lvl)
+            # anchor_sizes = (min(128., cfg.FPN.RPN_ANCHOR_START_SIZE * 2.**(lvl - k_min)), )
             anchor_aspect_ratios = cfg.FPN.RPN_ASPECT_RATIOS
             foa = data_utils.get_field_of_anchors(
                 field_stride, anchor_sizes, anchor_aspect_ratios
@@ -161,7 +163,7 @@ def _get_rpn_blobs(im_height, im_width, foas, all_anchors, gt_boxes):
 
     # Compute anchor labels:
     # label=1 is positive, 0 is negative, -1 is don't care (ignore)
-    labels = np.empty((num_inside, ), dtype=np.int32)
+    labels = np.empty((num_inside,), dtype=np.int32)
     labels.fill(-1)
     if len(gt_boxes) > 0:
         # Compute overlaps between the anchors and the gt boxes overlaps
