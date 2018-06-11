@@ -52,7 +52,7 @@ TEST:
     H_FLIP: True
     SCALES: (800, )
     MAX_SIZE: 1615
-    SCALE_SIZE_DEP: True
+    SCALE_SIZE_DEP: False
   BBOX_VOTE:
     ENABLED: True
     VOTE_TH: 0.8 # IOU >= VOTE_TH
