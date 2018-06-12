@@ -1,0 +1,21 @@
+FROM caffe2-python2:0.1
+
+# Clone the Detectron repository
+RUN git clone https://github.com/PacteraOliver/detectron /detectron
+
+# Install Python dependencies
+RUN pip install -r /detectron/requirements.txt
+
+# Install the COCO API
+RUN git clone https://github.com/cocodataset/cocoapi.git /cocoapi
+WORKDIR /cocoapi/PythonAPI
+RUN make install
+
+# Go to Detectron root
+WORKDIR /detectron
+
+# Set up Python modules
+RUN make
+
+# [Optional] Build custom ops
+RUN make ops
