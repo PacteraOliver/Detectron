@@ -98,6 +98,12 @@ def main(args):
     cfg.NUM_GPUS = 8
     args.weights = cache_url(args.weights, cfg.DOWNLOAD_CACHE)
     assert_and_infer_cfg(cache_urls=False)
+
+    assert not cfg.MODEL.RPN_ONLY, \
+        'RPN models are not supported'
+    assert not cfg.TEST.PRECOMPUTED_PROPOSALS, \
+        'Models that require precomputed proposals are not supported'
+
     model = infer_engine.initialize_model_from_cfg(args.weights)
     dummy_wider_dataset = wider_datasets.get_wider_dataset()
 
