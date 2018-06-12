@@ -107,7 +107,7 @@ def main(args):
     MODEL_ITER = 60000
 
     submit_result = []
-    result_file_name = 'detectron_val_result_model_fastrcnn_freeze_{}_' \
+    result_file_name = 'detectron_val_result_model_fast_rcnn_anchor_{}_' \
                        'NMS_{}_SOFTNMS_{}_BBOX_VOTE_{}_' \
                        'PRE_NMS_{}_BoxAlpha_{}_' \
                        'Thresh_{}_BoxNumber.txt'.format(
