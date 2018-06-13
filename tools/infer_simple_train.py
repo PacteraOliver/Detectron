@@ -113,7 +113,7 @@ def main(args):
     INFER_KP_THRESH = 2
     MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
 
-    logger.info("Model Iter: ".format(MODEL_ITER))
+    logger.info("Model Iter: {}".format(MODEL_ITER))
 
     submit_result = []
     result_file_name = 'detectron_val_result_model_fast_rcnn_anchor_{}_' \
