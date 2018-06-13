@@ -115,15 +115,15 @@ def main(args):
     submit_result = []
     result_file_name = 'detectron_val_result_model_fast_rcnn_anchor_{}_' \
                        'NMS_{}_SOFTNMS_{}_BBOX_VOTE_{}_' \
-                       'PRE_NMS_{}_BoxAlpha_{}_' \
+                       'PRE_NMS_{}_BBOX_REG_{}_' \
                        'Thresh_{}_BoxNumber.txt'.format(
         MODEL_ITER,
         cfg.TEST.NMS,
         cfg.TEST.SOFT_NMS.ENABLED,
         cfg.TEST.BBOX_VOTE.ENABLED,
         cfg.TEST.RPN_PRE_NMS_TOP_N,
-        INFER_BOX_ALPHA,
-        INFER_THRESH)
+        cfg.TEST.BBOX_REG,
+        cfg.TEST.FORCE_JSON_DATASET_EVAL)
 
     if os.path.isdir(args.im_or_folder):
         im_list = glob.iglob(args.im_or_folder + '/*.' + args.image_ext)
