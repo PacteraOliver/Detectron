@@ -32,6 +32,7 @@ import logging
 import os
 import sys
 import time
+import re
 
 from caffe2.python import workspace
 
@@ -110,7 +111,9 @@ def main(args):
     INFER_BOX_ALPHA = 0.3
     INFER_THRESH = 0.5
     INFER_KP_THRESH = 2
-    MODEL_ITER = 60000
+    MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
+
+    logger.info("Model Iter: ".format(MODEL_ITER))
 
     submit_result = []
     result_file_name = 'detectron_val_result_model_fast_rcnn_anchor_{}_' \
