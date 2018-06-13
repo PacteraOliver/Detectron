@@ -95,7 +95,7 @@ def parse_args():
 def main(args):
     logger = logging.getLogger(__name__)
     merge_cfg_from_file(args.cfg)
-    cfg.NUM_GPUS = 8
+    cfg.NUM_GPUS = 2
     args.weights = cache_url(args.weights, cfg.DOWNLOAD_CACHE)
     assert_and_infer_cfg(cache_urls=False)
 
@@ -108,7 +108,7 @@ def main(args):
     dummy_wider_dataset = wider_datasets.get_wider_dataset()
 
     INFER_BOX_ALPHA = 0.3
-    INFER_THRESH = 0.45
+    INFER_THRESH = 0.5
     INFER_KP_THRESH = 2
     MODEL_ITER = 60000
 
