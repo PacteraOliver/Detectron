@@ -108,7 +108,7 @@ def main(args):
     dummy_wider_dataset = wider_datasets.get_wider_dataset()
 
     INFER_BOX_ALPHA = 0.3
-    INFER_THRESH = 0.5
+    INFER_THRESH = 0.45
     INFER_KP_THRESH = 2
     MODEL_ITER = 60000
 
@@ -123,7 +123,7 @@ def main(args):
         cfg.TEST.BBOX_VOTE.ENABLED,
         cfg.TEST.RPN_PRE_NMS_TOP_N,
         cfg.TEST.BBOX_REG,
-        cfg.TEST.FORCE_JSON_DATASET_EVAL)
+        INFER_THRESH)
 
     if os.path.isdir(args.im_or_folder):
         im_list = glob.iglob(args.im_or_folder + '/*.' + args.image_ext)
