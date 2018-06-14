@@ -112,7 +112,8 @@ def main(args):
     INFER_THRESH = 0.5
     INFER_KP_THRESH = 2
     if "model_iter" in args.weights:
-        MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
+        # MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
+        MODEL_ITER = str(re.match(r"(.*)model_lowlr_(.*)\.pkl", args.weights).group(2))
     else:
         MODEL_ITER = "100000"
 
