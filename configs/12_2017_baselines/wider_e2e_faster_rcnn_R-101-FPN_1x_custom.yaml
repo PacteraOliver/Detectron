@@ -41,7 +41,7 @@ TEST:
   DATASETS: ('coco_2014_minival',)
   SCALE: 800
   MAX_SIZE: 1615
-  NMS: 0.8
+  NMS: 0.65
   RPN_NMS_THRESH: 0.8
   # SCORE_THRESH: 0.15
   RPN_PRE_NMS_TOP_N: 6000  # Per FPN level
