@@ -114,12 +114,12 @@ def main(args):
     if "model_iter" in args.weights:
         MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
     else:
-        MODEL_ITER = "60000"
+        MODEL_ITER = "90000"
 
     logger.info("Model Iter: {}".format(MODEL_ITER))
 
     submit_result = []
-    result_file_name = 'detectron_val_result_model_fast_rcnn_anchor_{}_' \
+    result_file_name = 'detectron_val_result_model_retina_{}_' \
                        'NMS_{}_SOFTNMS_{}_BBOX_VOTE_{}_' \
                        'PRE_NMS_{}_BBOX_REG_{}_' \
                        'Thresh_{}_BoxNumber.txt'.format(
