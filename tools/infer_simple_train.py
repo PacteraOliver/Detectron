@@ -121,12 +121,12 @@ def main(args):
 
     submit_result = []
     result_file_name = 'detectron_val_result_model_rpn_lowlr_{}_' \
-                       'NMS_{}_SOFTNMS_{}_BBOX_VOTE_{}_' \
+                       'NMS_{}_RPN_NMS_THRESH_{}_BBOX_VOTE_{}_' \
                        'PRE_NMS_{}_BBOX_REG_{}_' \
                        'Thresh_{}_BoxNumber.txt'.format(
         MODEL_ITER,
         cfg.TEST.NMS,
-        cfg.TEST.SOFT_NMS.ENABLED,
+        cfg.TEST.RPN_NMS_THRESH,
         cfg.TEST.BBOX_VOTE.ENABLED,
         cfg.TEST.RPN_PRE_NMS_TOP_N,
         cfg.TEST.BBOX_REG,
