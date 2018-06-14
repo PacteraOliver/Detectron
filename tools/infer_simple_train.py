@@ -111,7 +111,7 @@ def main(args):
     INFER_BOX_ALPHA = 0.3
     INFER_THRESH = 0.5
     INFER_KP_THRESH = 2
-    if "model_iter" in args.weights:
+    if "model_lowlr_" in args.weights:
         # MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
         MODEL_ITER = str(re.match(r"(.*)model_lowlr_(.*)\.pkl", args.weights).group(2))
     else:
