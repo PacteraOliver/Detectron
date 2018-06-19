@@ -120,10 +120,12 @@ def main(args):
     logger.info("Model Iter: {}".format(MODEL_ITER))
 
     submit_result = []
-    result_file_name = 'detectron_val_result_model_rpn_lowlr_{}_' \
+    model_name = "model_152_multi_scale"
+    result_file_name = 'detectron_val_result_{}_{}_' \
                        'NMS_{}_RPN_NMS_THRESH_{}_BBOX_VOTE_{}_' \
                        'PRE_NMS_{}_BBOX_REG_{}_' \
                        'Thresh_{}_BoxNumber.txt'.format(
+        model_name,
         MODEL_ITER,
         cfg.TEST.NMS,
         cfg.TEST.RPN_NMS_THRESH,
