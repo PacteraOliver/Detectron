@@ -39,7 +39,7 @@ TRAIN:
 TEST:
   DATASETS: ('coco_2014_minival',)
   SCALE: 800
-  MAX_SIZE: 1616
+  MAX_SIZE: 1600
   NMS: 0.5
   BBOX_VOTE:
     ENABLED: True
