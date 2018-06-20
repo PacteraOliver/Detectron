@@ -8,7 +8,6 @@ import argparse
 import cv2  # NOQA (Must import before importing caffe2 due to bug in cv2)
 import sys
 
-from caffe2.python import workspace
 from caffe2.python import net_drawer
 
 from detectron.core.config import assert_and_infer_cfg
@@ -56,9 +55,9 @@ def get_model(cfg_file, weights_file):
     return model
 
 
-args = parse_args()
-model = get_model(args.cfg, args.weights)
+if __name__ == '__main__':
+    args = parse_args()
+    model = get_model(args.cfg, args.weights)
 
-
-g = net_drawer.GetPydotGraph(model, rankdir="TB")
-g.write_dot(model.Proto().name + '.dot')
+    g = net_drawer.GetPydotGraph(model, rankdir="TB")
+    g.write_dot(model.Proto().name + '.dot')
