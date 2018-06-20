@@ -52,7 +52,7 @@ def get_model(cfg_file, weights_file):
     cfg.TEST.WEIGHTS = weights_file
     cfg.NUM_GPUS = 1
     assert_and_infer_cfg()
-    model = infer_engine.initialize_model_from_cfg()
+    model = infer_engine.initialize_model_from_cfg(cfg.TEST.WEIGHTS)
     return model
 
 
