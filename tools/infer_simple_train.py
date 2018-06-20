@@ -87,6 +87,20 @@ def parse_args():
     parser.add_argument(
         'im_or_folder', help='image or folder of images', default=None
     )
+    parser.add_argument(
+        '--test',
+        dest='test',
+        help='T or V',
+        default='T',
+        type=str
+    )
+    parser.add_argument(
+        '--model-name',
+        dest='model_name',
+        help='Model Name',
+        default='Model_final',
+        type=str
+    )
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
@@ -115,17 +129,24 @@ def main(args):
         # MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
         MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
     else:
-        MODEL_ITER = "100000"
+        MODEL_ITER = "90000"
 
     logger.info("Model Iter: {}".format(MODEL_ITER))
 
+    if args.test == "T":
+        submit_mode = "test"
+    elif args.test == "V":
+        submit_mode = "val"
+    else:
+        submit_mode = "default"
+
     submit_result = []
-    model_name = "model_152_multi_scale"
-    result_file_name = 'detectron_val_result_{}_{}_' \
+    result_file_name = 'detectron_{}_result_{}_{}_' \
                        'NMS_{}_RPN_NMS_THRESH_{}_BBOX_VOTE_{}_' \
                        'PRE_NMS_{}_BBOX_REG_{}_' \
                        'Thresh_{}_BoxNumber.txt'.format(
-        model_name,
+        submit_mode,
+        args.model_name,
         MODEL_ITER,
         cfg.TEST.NMS,
         cfg.TEST.RPN_NMS_THRESH,
