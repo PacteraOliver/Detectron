@@ -46,7 +46,7 @@ TEST:
   RPN_PRE_NMS_TOP_N: 10000  # Per FPN level
   RPN_POST_NMS_TOP_N: 1000
   BBOX_AUG:
-    ENABLED: False
+    ENABLED: True
     SCORE_HEUR: UNION
     COORD_HEUR: UNION
     H_FLIP: True
@@ -55,7 +55,7 @@ TEST:
     SCALE_H_FLIP: True
     SCALE_SIZE_DEP: False
     ASPECT_RATIOS: ()
-    ASPECT_RATIO_H_FLIP: False
+    ASPECT_RATIO_H_FLIP: True
   BBOX_VOTE:
     ENABLED: True
     VOTE_TH: 0.9
