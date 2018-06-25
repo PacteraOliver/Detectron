@@ -139,6 +139,8 @@ def main(args):
         submit_mode = "val"
     elif args.test == "Tr":
         submit_mode = "train"
+    elif args.test == "TN":
+        submit_mode = "test_new"
     else:
         submit_mode = "default"
 
