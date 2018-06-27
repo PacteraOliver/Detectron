@@ -156,7 +156,7 @@ def main(args):
         cfg.TEST.RPN_NMS_THRESH,
         cfg.TEST.BBOX_VOTE.ENABLED,
         cfg.TEST.RPN_PRE_NMS_TOP_N,
-        cfg.TEST.BBOX_AUG_ENABLED,
+        cfg.TEST.BBOX_AUG.ENABLED,
         INFER_THRESH)
 
     if os.path.isdir(args.im_or_folder):
