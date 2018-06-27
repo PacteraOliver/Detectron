@@ -129,7 +129,7 @@ def main(args):
         # MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
         MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
     else:
-        MODEL_ITER = "90000"
+        MODEL_ITER = "180000"
 
     logger.info("Model Iter: {}".format(MODEL_ITER))
 
@@ -147,7 +147,7 @@ def main(args):
     submit_result = []
     result_file_name = 'detectron_{}_result_{}_{}_' \
                        'NMS_{}_RPN_NMS_THRESH_{}_BBOX_VOTE_{}_' \
-                       'PRE_NMS_{}_BBOX_REG_{}_' \
+                       'PRE_NMS_{}_BBOX_AUG_{}_' \
                        'Thresh_{}_BoxNumber.txt'.format(
         submit_mode,
         args.model_name,
@@ -156,7 +156,7 @@ def main(args):
         cfg.TEST.RPN_NMS_THRESH,
         cfg.TEST.BBOX_VOTE.ENABLED,
         cfg.TEST.RPN_PRE_NMS_TOP_N,
-        cfg.TEST.BBOX_REG,
+        cfg.TEST.BBOX_AUG_ENABLED,
         INFER_THRESH)
 
     if os.path.isdir(args.im_or_folder):
