@@ -42,11 +42,12 @@ TEST:
   DATASETS: ('coco_2014_minival',)
   SCALE: 1000
   MAX_SIZE: 2120
-  NMS: 0.5
+  NMS: 0.6
+  RPN_NMS_THRESH: 0.8
   RPN_PRE_NMS_TOP_N: 10000  # Per FPN level
   RPN_POST_NMS_TOP_N: 2000
   BBOX_AUG:
-    ENABLED: True
+    ENABLED: False
     SCORE_HEUR: UNION
     COORD_HEUR: UNION
     H_FLIP: True
@@ -58,5 +59,5 @@ TEST:
     ASPECT_RATIO_H_FLIP: True
   BBOX_VOTE:
     ENABLED: True
-    VOTE_TH: 0.9
+    VOTE_TH: 0.85
 OUTPUT_DIR: .
