@@ -59,4 +59,8 @@ TEST:
   BBOX_VOTE:
     ENABLED: True
     VOTE_TH: 0.85
+  SOFT_NMS:
+    ENABLED: True
+    METHOD: linear
+    SIGMA: 0.5
 OUTPUT_DIR: .
