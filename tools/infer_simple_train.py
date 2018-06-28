@@ -146,13 +146,14 @@ def main(args):
 
     submit_result = []
     result_file_name = 'detectron_{}_result_{}_{}_' \
-                       'NMS_{}_RPN_NMS_THRESH_{}_BBOX_VOTE_{}_' \
+                       'NMS_{}_SOFT_NMS_{}_RPN_NMS_THRESH_{}_BBOX_VOTE_{}_' \
                        'PRE_NMS_{}_BBOX_AUG_{}_' \
                        'Thresh_{}_BoxNumber.txt'.format(
         submit_mode,
         args.model_name,
         MODEL_ITER,
         cfg.TEST.NMS,
+        cfg.TEST.SOFT_NMS.ENABLED,
         cfg.TEST.RPN_NMS_THRESH,
         cfg.TEST.BBOX_VOTE.ENABLED,
         cfg.TEST.RPN_PRE_NMS_TOP_N,
