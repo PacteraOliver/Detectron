@@ -110,7 +110,7 @@ def parse_args():
 def main(args):
     logger = logging.getLogger(__name__)
     merge_cfg_from_file(args.cfg)
-    cfg.NUM_GPUS = 2
+    cfg.NUM_GPUS = 1
     args.weights = cache_url(args.weights, cfg.DOWNLOAD_CACHE)
     assert_and_infer_cfg(cache_urls=False)
 
@@ -123,7 +123,7 @@ def main(args):
     dummy_wider_dataset = wider_datasets.get_wider_dataset()
 
     INFER_BOX_ALPHA = 0.3
-    INFER_THRESH = 0.4
+    INFER_THRESH = 0.3
     INFER_KP_THRESH = 2
     if "model_iter" in args.weights:
         # MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
@@ -141,13 +141,15 @@ def main(args):
         submit_mode = "train"
     elif args.test == "TN":
         submit_mode = "test_new"
+    elif args.test == "OUT":
+        submit_mode = "clip_out"
     else:
         submit_mode = "default"
 
     submit_result = []
     result_file_name = 'detectron_{}_result_{}_{}_' \
-                       'NMS_{}_SOFT_NMS_{}_RPN_NMS_THRESH_{}_BBOX_VOTE_{}_' \
-                       'PRE_NMS_{}_BBOX_AUG_{}_' \
+                       'NMS_{}_SOFT_NMS_{}_RPN_NMS_THRESH_{}_PRE_NMS_{}_' \
+                       'POST_NMS_{}_BBOX_AUG_{}_' \
                        'Thresh_{}_BoxNumber.txt'.format(
         submit_mode,
         args.model_name,
@@ -155,8 +157,8 @@ def main(args):
         cfg.TEST.NMS,
         cfg.TEST.SOFT_NMS.ENABLED,
         cfg.TEST.RPN_NMS_THRESH,
-        cfg.TEST.BBOX_VOTE.ENABLED,
         cfg.TEST.RPN_PRE_NMS_TOP_N,
+        cfg.TEST.RPN_POST_NMS_TOP_N,
         cfg.TEST.BBOX_AUG.ENABLED,
         INFER_THRESH)
 
