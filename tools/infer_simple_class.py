@@ -32,6 +32,7 @@ import logging
 import os
 import sys
 import time
+import re
 
 from caffe2.python import workspace
 
@@ -42,7 +43,7 @@ from detectron.utils.io import cache_url
 from detectron.utils.logging import setup_logging
 from detectron.utils.timer import Timer
 import detectron.core.test_engine as infer_engine
-import detectron.datasets.dummy_datasets as dummy_datasets
+import detectron.datasets.wider_datasets as wider_datasets
 import detectron.utils.c2 as c2_utils
 import detectron.utils.vis as vis_utils
 
@@ -86,6 +87,20 @@ def parse_args():
     parser.add_argument(
         'im_or_folder', help='image or folder of images', default=None
     )
+    parser.add_argument(
+        '--test',
+        dest='test',
+        help='T or V',
+        default='T',
+        type=str
+    )
+    parser.add_argument(
+        '--model-name',
+        dest='model_name',
+        help='Model Name',
+        default='Model_final',
+        type=str
+    )
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
@@ -98,10 +113,54 @@ def main(args):
     cfg.NUM_GPUS = 1
     args.weights = cache_url(args.weights, cfg.DOWNLOAD_CACHE)
     assert_and_infer_cfg(cache_urls=False)
+
+    assert not cfg.MODEL.RPN_ONLY, \
+        'RPN models are not supported'
+    assert not cfg.TEST.PRECOMPUTED_PROPOSALS, \
+        'Models that require precomputed proposals are not supported'
+
     model = infer_engine.initialize_model_from_cfg(args.weights)
-    dummy_coco_dataset = dummy_datasets.get_coco_dataset()
+    dummy_wider_dataset = wider_datasets.get_wider_dataset()
+
+    INFER_BOX_ALPHA = 0.3
+    INFER_THRESH = 0.3
+    INFER_KP_THRESH = 2
+    if "model_iter" in args.weights:
+        # MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
+        MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
+    else:
+        MODEL_ITER = "180000"
+
+    logger.info("Model Iter: {}".format(MODEL_ITER))
+
+    if args.test == "T":
+        submit_mode = "test"
+    elif args.test == "V":
+        submit_mode = "val"
+    elif args.test == "Tr":
+        submit_mode = "train"
+    elif args.test == "TN":
+        submit_mode = "test_new"
+    elif args.test == "OUT":
+        submit_mode = "clip_out"
+    else:
+        submit_mode = "default"
+
     submit_result = []
-    result_file_name = 'detectron_val_result.txt'
+    result_file_name = 'detectron_{}_result_{}_{}_' \
+                       'NMS_{}_SOFT_NMS_{}_RPN_NMS_THRESH_{}_PRE_NMS_{}_' \
+                       'POST_NMS_{}_BBOX_AUG_{}_' \
+                       'Thresh_{}_BoxNumber.txt'.format(
+        submit_mode,
+        args.model_name,
+        MODEL_ITER,
+        cfg.TEST.NMS,
+        cfg.TEST.SOFT_NMS.ENABLED,
+        cfg.TEST.RPN_NMS_THRESH,
+        cfg.TEST.RPN_PRE_NMS_TOP_N,
+        cfg.TEST.RPN_POST_NMS_TOP_N,
+        cfg.TEST.BBOX_AUG.ENABLED,
+        INFER_THRESH)
 
     if os.path.isdir(args.im_or_folder):
         im_list = glob.iglob(args.im_or_folder + '/*.' + args.image_ext)
@@ -130,18 +189,18 @@ def main(args):
                 'rest (caches and auto-tuning need to warm up)'
             )
 
-        result = vis_utils.vis_one_image_bbox(
+        result = vis_utils.vis_one_image_bbox_classes(
             im[:, :, ::-1],  # BGR -> RGB for visualization
             im_name,
             args.output_dir,
             cls_boxes,
             cls_segms,
             cls_keyps,
-            dataset=dummy_coco_dataset,
-            box_alpha=0.3,
-            show_class=True,
-            thresh=0.7,
-            kp_thresh=2
+            dataset=dummy_wider_dataset,
+            box_alpha=INFER_BOX_ALPHA,
+            show_class=False,
+            thresh=INFER_THRESH,
+            kp_thresh=INFER_KP_THRESH
         )
         if result:
             submit_result.extend(result)
@@ -153,7 +212,7 @@ def main(args):
             result_file.write("%s\n" % item)
 
     logger.info(
-        'The result file has been written in {}.'.format(result_file_name)
+        'The result file has been written in {}'.format(result_file_name)
     )
 
 
