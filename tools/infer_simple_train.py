@@ -123,7 +123,7 @@ def main(args):
     dummy_wider_dataset = wider_datasets.get_wider_dataset()
 
     INFER_BOX_ALPHA = 0.3
-    INFER_THRESH = 0.3
+    INFER_THRESH = 0.4
     INFER_KP_THRESH = 2
     if "model_iter" in args.weights:
         # MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))

@@ -1,3 +1,4 @@
 # Ignore All
 *.*
+out/
 !.gitignore
