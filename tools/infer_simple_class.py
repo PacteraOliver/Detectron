@@ -147,7 +147,7 @@ def main(args):
         submit_mode = "default"
 
     submit_result = []
-    result_file_name = 'detectron_{}_result_{}_{}_' \
+    result_file_name = 'detectron_class_{}_result_{}_{}_' \
                        'NMS_{}_SOFT_NMS_{}_RPN_NMS_THRESH_{}_PRE_NMS_{}_' \
                        'POST_NMS_{}_BBOX_AUG_{}_' \
                        'Thresh_{}_BoxNumber.txt'.format(
