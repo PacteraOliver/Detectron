@@ -113,5 +113,5 @@ if __name__ == '__main__':
         cfg.TEST.WEIGHTS,
         ind_range=args.range,
         multi_gpu_testing=args.multi_gpu_testing,
-        check_expected_results=True,
+        check_expected_results=False,
     )
