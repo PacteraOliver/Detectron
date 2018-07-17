@@ -143,6 +143,8 @@ def main(args):
         submit_mode = "test_new"
     elif args.test == "OUT":
         submit_mode = "clip_out"
+    elif args.test == "DEV":
+        submit_mode = "val_dev"
     else:
         submit_mode = "default"
 

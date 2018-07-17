@@ -129,7 +129,7 @@ def main(args):
         # MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
         MODEL_ITER = str(re.match(r"(.*)model_iter(.*)\.pkl", args.weights).group(2))
     else:
-        MODEL_ITER = "180000"
+        MODEL_ITER = "260000"
 
     logger.info("Model Iter: {}".format(MODEL_ITER))
 
@@ -143,6 +143,8 @@ def main(args):
         submit_mode = "test_new"
     elif args.test == "OUT":
         submit_mode = "clip_out"
+    elif args.test == "DEV":
+        submit_mode = "val_dev"
     else:
         submit_mode = "default"
 
