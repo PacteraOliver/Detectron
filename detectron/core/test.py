@@ -120,13 +120,11 @@ def im_conv_body_only(model, im, target_scale, target_max_size):
 
 def im_detect_bbox(model, im, target_scale, target_max_size, boxes=None):
     """Bounding box object detection for an image with given box proposals.
-
     Arguments:
         model (DetectionModelHelper): the detection model to use
         im (ndarray): color image to test (in BGR order)
         boxes (ndarray): R x 4 array of object proposals in 0-indexed
             [x1, y1, x2, y2] format, or None if using RPN
-
     Returns:
         scores (ndarray): R x K array of object class scores for K classes
             (K includes background as object category 0)
@@ -374,13 +372,11 @@ def im_detect_mask(model, im_scale, boxes):
     """Infer instance segmentation masks. This function must be called after
     im_detect_bbox as it assumes that the Caffe2 workspace is already populated
     with the necessary blobs.
-
     Arguments:
         model (DetectionModelHelper): the detection model to use
         im_scales (list): image blob scales as returned by im_detect_bbox
         boxes (ndarray): R x 4 array of bounding box detections (e.g., as
             returned by im_detect_bbox)
-
     Returns:
         pred_masks (ndarray): R x K x M x M array of class specific soft masks
             output by the network (must be processed by segm_results to convert
@@ -415,12 +411,10 @@ def im_detect_mask(model, im_scale, boxes):
 
 def im_detect_mask_aug(model, im, boxes):
     """Performs mask detection with test-time augmentations.
-
     Arguments:
         model (DetectionModelHelper): the detection model to use
         im (ndarray): BGR image to test
         boxes (ndarray): R x 4 array of bounding boxes
-
     Returns:
         masks (ndarray): R x K x M x M array of class specific soft masks
     """
@@ -541,13 +535,11 @@ def im_detect_keypoints(model, im_scale, boxes):
     """Infer instance keypoint poses. This function must be called after
     im_detect_bbox as it assumes that the Caffe2 workspace is already populated
     with the necessary blobs.
-
     Arguments:
         model (DetectionModelHelper): the detection model to use
         im_scales (list): image blob scales as returned by im_detect_bbox
         boxes (ndarray): R x 4 array of bounding box detections (e.g., as
             returned by im_detect_bbox)
-
     Returns:
         pred_heatmaps (ndarray): R x J x M x M array of keypoint location
             logits (softmax inputs) for each of the J keypoint types output
@@ -580,12 +572,10 @@ def im_detect_keypoints(model, im_scale, boxes):
 
 def im_detect_keypoints_aug(model, im, boxes):
     """Computes keypoint predictions with test-time augmentations.
-
     Arguments:
         model (DetectionModelHelper): the detection model to use
         im (ndarray): BGR image to test
         boxes (ndarray): R x 4 array of bounding boxes
-
     Returns:
         heatmaps (ndarray): R x J x M x M array of keypoint location logits
     """
@@ -749,18 +739,19 @@ def combine_heatmaps_size_dep(hms_ts, ds_ts, us_ts, boxes, heur_f):
 def box_results_with_nms_and_limit(scores, boxes):
     """Returns bounding-box detection results by thresholding on scores and
     applying non-maximum suppression (NMS).
-
     `boxes` has shape (#detections, 4 * #classes), where each row represents
     a list of predicted bounding boxes for each of the object classes in the
     dataset (including the background class). The detections in each row
     originate from the same object proposal.
-
     `scores` has shape (#detection, #classes), where each row represents a list
     of object detection confidence scores for each of the object classes in the
     dataset (including the background class). `scores[i, j]`` corresponds to the
     box at `boxes[i, j * 4:(j + 1) * 4]`.
     """
     num_classes = cfg.MODEL.NUM_CLASSES
+
+    logger.info('NUM CLASSES: {}'.format(num_classes))
+
     cls_boxes = [[] for _ in range(num_classes)]
     # Apply threshold on detection probabilities and apply NMS
     # Skip j = 0, because it's the background class
@@ -888,11 +879,9 @@ def keypoint_results(cls_boxes, pred_heatmaps, ref_boxes):
 
 def _get_rois_blob(im_rois, im_scale):
     """Converts RoIs into network inputs.
-
     Arguments:
         im_rois (ndarray): R x 4 matrix of RoIs in original image coordinates
         im_scale_factors (list): scale factors as returned by _get_image_blob
-
     Returns:
         blob (ndarray): R x 5 matrix of RoIs in the image pyramid with columns
             [level, x1, y1, x2, y2]
@@ -904,11 +893,9 @@ def _get_rois_blob(im_rois, im_scale):
 
 def _project_im_rois(im_rois, scales):
     """Project image RoIs into the image pyramid built by _get_image_blob.
-
     Arguments:
         im_rois (ndarray): R x 4 matrix of RoIs in original image coordinates
         scales (list): scale factors as returned by _get_image_blob
-
     Returns:
         rois (ndarray): R x 4 matrix of projected RoI coordinates
         levels (ndarray): image pyramid levels used by each projected RoI
@@ -921,11 +908,9 @@ def _project_im_rois(im_rois, scales):
 def _add_multilevel_rois_for_test(blobs, name):
     """Distributes a set of RoIs across FPN pyramid levels by creating new level
     specific RoI blobs.
-
     Arguments:
         blobs (dict): dictionary of blobs
         name (str): a key in 'blobs' identifying the source RoI blob
-
     Returns:
         [by ref] blobs (dict): new keys named by `name + 'fpn' + level`
             are added to dict each with a value that's an R_level x 5 ndarray of
